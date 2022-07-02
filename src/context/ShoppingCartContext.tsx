@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
+import ShoppingCart from '../components/ShoppingCart';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 
 type ShoppingCartContext = {
   openCart: () => void;
@@ -29,7 +31,9 @@ export const useShoppingCart = () => {
 
 export const ShoppingCartProvider = ({ children }: ProviderProps) => {
   const [cartOpen, setCartOpen] = useState(false);
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  // const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [cartItems, setCartItems] = useLocalStorage<CartItem[]>('shopping-cart', []);
+  
   const cartQuantity = cartItems.reduce((acc, cur)=> acc + cur.quantity, 0);
 
   const getItemQuantity = (id: number) => {
@@ -40,7 +44,6 @@ export const ShoppingCartProvider = ({ children }: ProviderProps) => {
     // return cartItems.map(item => item.id === id ? ({ ...item, quantity: item.quantity += 1 }) : ({ ...item }));
     setCartItems(currItems => {
       if(currItems.find(item => item.id === id) === undefined) {
-        console.log(currItems.find(item => item.id));
         return [...currItems, { id, quantity: 1 }]
       } else {
         return currItems.map(item => {
@@ -76,6 +79,7 @@ export const ShoppingCartProvider = ({ children }: ProviderProps) => {
   return (
     <ShoppingCartContext.Provider value={{getItemQuantity, increaseQuantity, decreaseQuantity, removeFromCart, openCart, closeCart, cartItems, cartQuantity}}>
       {children}
+      <ShoppingCart isOpen={cartOpen}/>
     </ShoppingCartContext.Provider>
   );
 };

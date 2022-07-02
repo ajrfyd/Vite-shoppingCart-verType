@@ -13,7 +13,7 @@ type StoreItemProps = {
 const StoreItem = ({ id, name, price, imgUrl }: StoreItemProps) => {
   const { getItemQuantity, increaseQuantity, decreaseQuantity, removeFromCart } = useShoppingCart();
   const quantity = getItemQuantity(id);
-    
+  
   return (
     <Card className='h-100'>
       <Card.Img variant='top' src={imgUrl} height='200px' style={{ objectFit: 'cover' }}/>
